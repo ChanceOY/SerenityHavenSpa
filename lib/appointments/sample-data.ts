@@ -1,0 +1,57 @@
+import { addHours, formatISO, startOfToday } from "date-fns";
+import type { AppointmentSummary } from "@/lib/types";
+
+const today = startOfToday();
+
+export const sampleAppointments: AppointmentSummary[] = [
+  {
+    id: "appt-001",
+    bookingReference: "SHS-REQ-1001",
+    customerName: "Ama Mensah",
+    customerPhone: "+233 00 000 0000",
+    customerEmail: "ama@example.com",
+    serviceSummary: "Swedish Massage, 90 min",
+    locationType: "SPA",
+    bookingSource: "ONLINE",
+    status: "PENDING",
+    startTime: formatISO(addHours(today, 10)),
+    endTime: formatISO(addHours(today, 11.5)),
+    preferredStaffName: "Ruby",
+    assignedStaffNames: [],
+    totalPesewas: 30000,
+    transportFeeStatus: "NOT_REQUIRED",
+  },
+  {
+    id: "appt-002",
+    bookingReference: "SHS-WALK-1002",
+    customerName: "Kojo Boateng",
+    customerPhone: "+233 00 000 0001",
+    serviceSummary: "Deep Tissue Massage, 60 min",
+    locationType: "SPA",
+    bookingSource: "WALK_IN",
+    status: "CONFIRMED",
+    startTime: formatISO(addHours(today, 13)),
+    endTime: formatISO(addHours(today, 14)),
+    assignedStaffNames: ["Anita"],
+    totalPesewas: 25000,
+    transportFeeStatus: "NOT_REQUIRED",
+  },
+  {
+    id: "appt-003",
+    bookingReference: "SHS-HOME-1003",
+    customerName: "Efua Addo",
+    customerPhone: "+233 00 000 0002",
+    serviceSummary: "Body Scrub & Steaming",
+    locationType: "HOME",
+    bookingSource: "ONLINE",
+    status: "PENDING",
+    startTime: null,
+    endTime: null,
+    assignedStaffNames: [],
+    totalPesewas: 65000,
+    area: "East Legon",
+    address: "Address pending confirmation",
+    landmark: "Landmark pending confirmation",
+    transportFeeStatus: "PENDING_CONFIRMATION",
+  },
+];
