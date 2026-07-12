@@ -15,8 +15,7 @@ export default async function BookPage({
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9f6f52]">Book Now</p>
         <h1 className="serif mt-3 text-5xl font-semibold text-[#583d2f]">Create a Serenity Haven booking request.</h1>
         <p className="mt-5 leading-7 text-[#5f554d]">
-          Because staff schedules are not confirmed yet, V1 submissions are treated as booking requests pending confirmation unless
-          availability can be calculated from configured schedules.
+          Choose your preferred treatment, therapist and time. Our team will review your request and confirm your appointment.
         </p>
       </div>
       <div className="mt-10">

@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { format } from "date-fns";
-import { sampleAppointments } from "@/lib/appointments/sample-data";
+import { displayAppointmentTime, getDashboardData } from "@/lib/appointments/data";
 
-export default function StaffDashboardPage() {
+export default async function StaffDashboardPage() {
+  const dashboard = await getDashboardData();
   const stats = [
-    ["Today", sampleAppointments.length],
-    ["Pending Requests", sampleAppointments.filter((appointment) => appointment.status === "PENDING").length],
-    ["Upcoming", sampleAppointments.filter((appointment) => appointment.status === "CONFIRMED").length],
-    ["Completed", sampleAppointments.filter((appointment) => appointment.status === "COMPLETED").length],
-    ["Walk-Ins", sampleAppointments.filter((appointment) => appointment.bookingSource === "WALK_IN").length],
+    ["Today", dashboard.stats.today],
+    ["Pending Requests", dashboard.stats.pending],
+    ["Upcoming", dashboard.stats.upcoming],
+    ["Completed", dashboard.stats.completed],
+    ["Walk-Ins", dashboard.stats.walkIns],
   ] as const;
 
   return (
@@ -25,20 +25,23 @@ export default function StaffDashboardPage() {
       <section className="mt-8 rounded-lg bg-white p-5">
         <h2 className="text-lg font-semibold text-[#583d2f]">Today's Appointments</h2>
         <div className="mt-4 divide-y divide-[#583d2f]/10">
-          {sampleAppointments.map((appointment) => (
-            <div key={appointment.id} className="grid gap-3 py-4 text-sm md:grid-cols-[90px_1fr_110px_100px_80px] md:items-center">
-              <span className="font-semibold text-[#583d2f]">{appointment.startTime ? format(new Date(appointment.startTime), "HH:mm") : "Request"}</span>
+          {dashboard.today.map((appointment) => (
+            <div key={appointment.id} className="grid gap-3 py-4 text-sm md:grid-cols-[90px_1fr_90px_90px_110px_100px_80px] md:items-center">
+              <span className="font-semibold text-[#583d2f]">{displayAppointmentTime(appointment.startTime)}</span>
               <div>
-                <p className="font-semibold">{appointment.customerName}</p>
+                <p className="font-semibold">{appointment.bookingReference} / {appointment.customerName}</p>
                 <p className="text-[#5f554d]">{appointment.serviceSummary}</p>
               </div>
               <span>{appointment.locationType}</span>
+              <span>{appointment.bookingSource}</span>
               <span>{appointment.status}</span>
+              <span>{appointment.preferredStaffName ?? (appointment.assignedStaffNames.join(", ") || "Unassigned")}</span>
               <Link href={`/staff/appointments/${appointment.id}`} className="font-semibold text-[#583d2f] underline underline-offset-4">
                 View
               </Link>
             </div>
           ))}
+          {dashboard.today.length === 0 ? <p className="py-6 text-sm text-[#5f554d]">No appointments scheduled for today.</p> : null}
         </div>
       </section>
     </div>

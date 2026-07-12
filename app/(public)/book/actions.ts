@@ -1,12 +1,17 @@
 "use server";
 
-import { createBookingReference } from "@/lib/booking/reference";
+import { createOnlineBooking } from "@/lib/bookings/create-booking";
 import { bookingRequestSchema, type BookingRequestInput } from "@/lib/validation/booking";
 
 export type BookingActionState =
   | {
       ok: true;
       bookingReference: string;
+      status: "PENDING";
+      serviceName: string;
+      durationMinutes: number | null;
+      pricePesewas: number;
+      preferredStaffName: string | null;
       data: BookingRequestInput;
     }
   | {
@@ -24,9 +29,24 @@ export async function submitBookingRequest(input: BookingRequestInput): Promise<
     };
   }
 
-  return {
-    ok: true,
-    bookingReference: createBookingReference(parsed.data.locationType === "HOME" ? "SHS-HOME" : "SHS-REQ"),
-    data: parsed.data,
-  };
+  try {
+    const appointment = await createOnlineBooking(parsed.data);
+    const firstLine = appointment.serviceLines[0];
+
+    return {
+      ok: true,
+      bookingReference: appointment.bookingReference,
+      status: "PENDING",
+      serviceName: firstLine?.service_name_snapshot ?? appointment.serviceSummary,
+      durationMinutes: firstLine?.duration_minutes_snapshot ?? null,
+      pricePesewas: appointment.totalPesewas,
+      preferredStaffName: appointment.preferredStaffName,
+      data: parsed.data,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Unable to submit booking request.",
+    };
+  }
 }

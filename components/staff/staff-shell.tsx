@@ -1,15 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CalendarCheck, LayoutDashboard, Receipt, Scissors, UserPlus, UsersRound } from "lucide-react";
+import { CalendarCheck, LayoutDashboard, Scissors, UserPlus, UsersRound } from "lucide-react";
 
 const staffLinks = [
   ["/staff/dashboard", "Dashboard", LayoutDashboard],
   ["/staff/appointments", "Appointments", CalendarCheck],
-  ["/staff/walk-ins/new", "New Walk-In", UserPlus],
+  ["/staff/walk-ins/new", "New Appointment", UserPlus],
   ["/staff/customers", "Customers", UsersRound],
   ["/staff/services", "Services", Scissors],
   ["/staff/team", "Team", UsersRound],
-  ["/staff/receipts/demo", "Receipt", Receipt],
 ] as const;
 
 export function StaffShell({ children }: { children: React.ReactNode }) {

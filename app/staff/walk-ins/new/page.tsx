@@ -1,37 +1,18 @@
-import { services } from "@/lib/services/catalog";
-import { staffMembers } from "@/lib/staff/staff";
+import { ManualAppointmentForm } from "@/components/staff/manual-appointment-form";
+import { listServiceVariantOptions } from "@/lib/services/data";
+import { listBookableStaff } from "@/lib/staff/data";
+import { createWalkInAppointment } from "./actions";
 
-export default function NewWalkInPage() {
+export default async function NewWalkInPage() {
+  const [variants, staffMembers] = await Promise.all([listServiceVariantOptions("SPA"), listBookableStaff()]);
+
   return (
     <div>
-      <h1 className="serif text-4xl font-semibold text-[#583d2f]">New Walk-In</h1>
-      <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        <section className="rounded-lg bg-white p-5">
-          <h2 className="font-semibold text-[#583d2f]">Customer</h2>
-          <input className="mt-4 w-full rounded-md border px-4 py-3" placeholder="Search by phone" />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <input className="rounded-md border px-4 py-3" placeholder="Customer name" />
-            <input className="rounded-md border px-4 py-3" placeholder="Phone" />
-          </div>
-        </section>
-        <section className="rounded-lg bg-white p-5">
-          <h2 className="font-semibold text-[#583d2f]">Services and Staff</h2>
-          <select className="mt-4 w-full rounded-md border px-4 py-3">
-            {services.map((service) => (
-              <option key={service.id}>{service.name}</option>
-            ))}
-          </select>
-          <select className="mt-4 w-full rounded-md border px-4 py-3">
-            <option>Assign later</option>
-            {staffMembers.map((staff) => (
-              <option key={staff.id}>{staff.displayName}</option>
-            ))}
-          </select>
-          <button type="button" className="mt-5 rounded-full bg-[#583d2f] px-5 py-3 text-sm font-semibold text-white">
-            Create Walk-In Appointment
-          </button>
-        </section>
-      </div>
+      <h1 className="serif text-4xl font-semibold text-[#583d2f]">New Appointment</h1>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5f554d]">
+        Create a checked-in walk-in for a customer who is here now, or schedule a confirmed in-spa appointment for later.
+      </p>
+      <ManualAppointmentForm variants={variants} staffMembers={staffMembers} action={createWalkInAppointment} />
     </div>
   );
 }

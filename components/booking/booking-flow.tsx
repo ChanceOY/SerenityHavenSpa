@@ -143,10 +143,6 @@ export function BookingFlow({ initialLocation, initialServiceId }: { initialLoca
   }
 
   if (result?.ok) {
-    const service = getServiceById(result.data.serviceId);
-    const variant = getVariantById(result.data.variantId);
-    const staff = eligibleStaff.find((member) => member.id === result.data.preferredStaffId);
-
     return (
       <div className="rounded-lg bg-white p-6 shadow-sm">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d7dfcf] text-[#583d2f]">
@@ -154,15 +150,21 @@ export function BookingFlow({ initialLocation, initialServiceId }: { initialLoca
         </div>
         <h2 className="serif mt-5 text-4xl font-semibold text-[#583d2f]">Booking request received.</h2>
         <p className="mt-3 text-sm leading-6 text-[#5f554d]">
-          Reference <strong>{result.bookingReference}</strong>. Serenity Haven staff will review and confirm your appointment.
+          Thank you for choosing Serenity Haven Spa. Your booking request has been received, and our team will contact you shortly to confirm your appointment.
         </p>
+        <p className="mt-3 text-sm font-semibold text-[#583d2f]">Reference: {result.bookingReference}</p>
+        {result.data.locationType === "HOME" ? (
+          <p className="mt-2 text-sm leading-6 text-[#5f554d]">Transportation fees for home service will be confirmed based on your location.</p>
+        ) : null}
         <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
-          <SummaryItem label="Service" value={service?.name ?? "Selected service"} />
+          <SummaryItem label="Service" value={result.serviceName} />
           <SummaryItem label="Location" value={result.data.locationType === "SPA" ? "Visit the Spa" : "Home Service"} />
           <SummaryItem label="Date/time requested" value={`${result.data.requestedDate} at ${result.data.requestedTime}`} />
-          <SummaryItem label="Therapist preference" value={staff?.displayName ?? "No Preference / staff assigned"} />
-          <SummaryItem label="Timing" value={variant?.durationMinutes ? formatDuration(variant.durationMinutes) : "Staff will confirm"} />
-          <SummaryItem label="Status" value="Pending confirmation" />
+          <SummaryItem label="Therapist preference" value={result.preferredStaffName ?? "No Preference / staff assigned"} />
+          <SummaryItem label="Timing" value={result.durationMinutes ? formatDuration(result.durationMinutes) : "Staff will confirm"} />
+          <SummaryItem label="Price" value={formatMoney(result.pricePesewas)} />
+          <SummaryItem label="Status" value={result.status} />
+          {result.data.locationType === "HOME" ? <SummaryItem label="Home address" value={[result.data.area, result.data.address, result.data.landmark].filter(Boolean).join(", ")} /> : null}
         </dl>
       </div>
     );
